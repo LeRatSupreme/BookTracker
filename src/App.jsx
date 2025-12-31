@@ -17,8 +17,10 @@ const RequireProfile = ({ children }) => {
     // Check if profile exists
     const profile = useLiveQuery(() => db.userProfile.toArray());
 
-    // While loading (undefined), show nothing or a loader
-    if (profile === undefined) return null;
+    // While loading (undefined), show a loader instead of null
+    if (profile === undefined) {
+        return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 rounded-full border-4 border-brand-200 border-t-brand-600 animate-spin" /></div>;
+    }
 
     // If no profile found, redirect to onboarding
     if (profile.length === 0) {
