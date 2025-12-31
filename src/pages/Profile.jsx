@@ -5,6 +5,7 @@ import { Trophy, Medal, Flame, Star, Zap, Edit2, Archive, Download, Upload, Tras
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
 import AvatarUploader from '../components/AvatarUploader';
+import ReadingHeatmap from '../components/ReadingHeatmap';
 
 const Profile = () => {
     const fileInputRef = useRef(null);
@@ -136,6 +137,9 @@ const Profile = () => {
                 </div>
                 <p className="text-xs text-center mt-2 text-slate-400">Encore {500 - (data.totalPages % 500)} pages pour le niveau supérieur !</p>
             </div>
+
+            {/* Reading Heatmap */}
+            <ReadingHeatmap theme={profile.theme} />
 
             {/* Annual Goal */}
             <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-xl relative overflow-hidden">

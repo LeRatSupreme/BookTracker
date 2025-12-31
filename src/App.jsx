@@ -7,7 +7,7 @@ import Layout from './layout/Layout';
 import BookList from './pages/BookList';
 import AddBook from './pages/AddBook';
 import EditBookPage from './pages/EditBookPage';
-import Dashboard from './pages/Dashboard';
+import StatsPage from './pages/StatsPage';
 import Onboarding from './pages/Onboarding';
 import Profile from './pages/Profile';
 import FocusMode from './pages/FocusMode';
@@ -45,7 +45,7 @@ function App() {
                         <Route index element={<BookList />} />
                         <Route path="add" element={<AddBook />} />
                         <Route path="edit/:id" element={<EditBookPage />} />
-                        <Route path="stats" element={<Dashboard />} />
+                        <Route path="stats" element={<StatsPage />} />
                         <Route path="profile" element={<Profile />} />
                         <Route path="focus" element={<FocusMode />} />
                         {/* Catch all redirect to home */}
