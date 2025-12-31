@@ -4,8 +4,12 @@ import { db } from '../db';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Trophy, BookOpen, Layers, Download } from 'lucide-react';
 
+import RecommendationEngine from '../components/RecommendationEngine';
+
 const Dashboard = () => {
+    // ... (keep query)
     const stats = useLiveQuery(async () => {
+        // ...
         const allBooks = await db.books.toArray();
 
         // Core stats
@@ -13,7 +17,7 @@ const Dashboard = () => {
         const totalPagesRead = finishedBooks.reduce((sum, book) => sum + (book.pages || 0), 0) +
             allBooks.filter(b => b.status === 'reading').reduce((sum, book) => sum + (book.currentPage || 0), 0);
 
-        // Chart data: Distribution by status
+        // Chart data
         const data = [
             { name: 'Lus', count: finishedBooks.length, color: '#22c55e' },
             { name: 'En cours', count: allBooks.filter(b => b.status === 'reading').length, color: '#3b82f6' },
@@ -38,6 +42,9 @@ const Dashboard = () => {
     return (
         <div className="space-y-6 pb-20">
             <h2 className="text-xl font-bold p-1">Tableau de bord</h2>
+
+            {/* AI Recommendation */}
+            <RecommendationEngine />
 
             {/* Hero Stats */}
             <div className="grid grid-cols-2 gap-4">
