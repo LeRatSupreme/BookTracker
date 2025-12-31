@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, BookOpen } from 'lucide-react';
+import { BookOpen, Star, Clock, CheckCircle } from 'lucide-react';
 import clsx from 'clsx';
+import { useNavigate } from 'react-router-dom';
+import BookSynopsisModal from './BookSynopsisModal';
 
-const BookCard = ({ book, onDelete, onEdit }) => {
+const BookCard = ({ book, onEdit }) => {
+    const navigate = useNavigate();
+    const [showSynopsis, setShowSynopsis] = useState(false);
     const { title, author, cover, rating, status, currentPage, pages } = book;
 
     // Calculate progress percentage
-    const progress = pages > 0 ? Math.min(100, Math.round((currentPage / pages) * 100)) : 0;
+    const progress = book.pages > 0 ? Math.min(100, Math.round((book.currentPage / book.pages) * 100)) : 0;
 
     return (
         <motion.div
@@ -40,23 +44,36 @@ const BookCard = ({ book, onDelete, onEdit }) => {
 
             {/* Content Content (floating on bottom) */}
             <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                {/* Status Badge */}
-                <div className="flex justify-between items-end mb-1">
-                    {rating > 0 ? (
-                        <div className="flex items-center gap-1 text-yellow-400 bg-black/30 backdrop-blur-md px-2 py-1 rounded-lg">
-                            <Star size={10} fill="currentColor" />
-                            <span className="text-xs font-bold leading-none">{rating}</span>
-                        </div>
-                    ) : <span></span>}
-
+                {/* Status Badge and Actions */}
+                <div className="flex justify-between items-center mt-2">
                     <span className={clsx(
-                        "text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded-lg backdrop-blur-md",
-                        status === 'finished' && "bg-green-500/80 text-white",
-                        status === 'reading' && "bg-brand-500/80 text-white",
-                        status === 'tbr' && "bg-slate-500/80 text-white"
+                        "px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
+                        book.status === 'reading' ? "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300" :
+                            book.status === 'finished' ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-300" :
+                                "bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300"
                     )}>
-                        {status === 'reading' ? `${progress}%` : status}
+                        {book.status === 'reading' ? 'En cours' : book.status === 'finished' ? 'Terminé' : 'À lire'}
                     </span>
+
+                    {/* Actions */}
+                    <div className="flex gap-2">
+                        {/* Synopsis Trigger */}
+                        <button
+                            onClick={(e) => { e.stopPropagation(); setShowSynopsis(true); }}
+                            className="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors"
+                            title="Voir le résumé"
+                        >
+                            <BookOpen size={16} />
+                        </button>
+
+                        {/* Rating */}
+                        {book.rating > 0 && (
+                            <div className="flex items-center gap-0.5 text-amber-400">
+                                <span className="text-xs font-bold">{book.rating}</span>
+                                <Star size={12} fill="currentColor" />
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 <h3 className="text-white font-bold text-lg leading-tight line-clamp-2 mb-1 drop-shadow-md">{title}</h3>

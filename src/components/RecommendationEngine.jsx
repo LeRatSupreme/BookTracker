@@ -5,10 +5,12 @@ import { Sparkles, WifiOff, X, BookOpen, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useOnlineStatus } from '../hooks/useOnlineStatus';
 import clsx from 'clsx';
+import BookSynopsisModal from './BookSynopsisModal';
 
 const RecommendationEngine = () => {
     const isOnline = useOnlineStatus();
     const [isOpen, setIsOpen] = useState(false);
+    const [showSynopsis, setShowSynopsis] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [recommendation, setRecommendation] = useState(null);
     const [errorMsg, setErrorMsg] = useState('');
@@ -201,13 +203,22 @@ const RecommendationEngine = () => {
                                             {recommendation.description || "Aucun résumé disponible."}
                                         </p>
 
-                                        <button
-                                            onClick={addToLibrary}
-                                            className="w-full py-4 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-2xl shadow-lg shadow-violet-500/30 flex items-center justify-center gap-2 transition-all active:scale-95"
-                                        >
-                                            <Plus size={20} />
-                                            Ajouter à ma Pile à Lire
-                                        </button>
+                                        <div className="flex gap-3">
+                                            <button
+                                                onClick={() => setShowSynopsis(true)}
+                                                className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold rounded-2xl flex items-center justify-center gap-2 transition-colors"
+                                            >
+                                                <BookOpen size={20} />
+                                                Résumé
+                                            </button>
+                                            <button
+                                                onClick={addToLibrary}
+                                                className="flex-[2] py-4 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-2xl shadow-lg shadow-violet-500/30 flex items-center justify-center gap-2 transition-all active:scale-95"
+                                            >
+                                                <Plus size={20} />
+                                                Ajouter
+                                            </button>
+                                        </div>
                                     </div>
                                 </>
                             )}
@@ -215,6 +226,12 @@ const RecommendationEngine = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <BookSynopsisModal
+                isOpen={showSynopsis}
+                onClose={() => setShowSynopsis(false)}
+                book={recommendation}
+            />
         </>
     );
 };

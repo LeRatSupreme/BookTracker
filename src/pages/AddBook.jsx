@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db } from '../db';
-import { Search, Plus, Save, X, Book } from 'lucide-react';
+import { Search, Plus, Save, X, Book, BookOpen } from 'lucide-react';
+import BookSynopsisModal from '../components/BookSynopsisModal';
 
 const AddBook = () => {
     const navigate = useNavigate();
@@ -11,6 +12,8 @@ const AddBook = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [startIndex, setStartIndex] = useState(0); // For pagination
     const [selectedBook, setSelectedBook] = useState(null);
+    const [previewBook, setPreviewBook] = useState(null);
+
 
     // Manual form state
     const [formData, setFormData] = useState({
@@ -22,7 +25,8 @@ const AddBook = () => {
         rating: 0,
         currentPage: 0,
         tags: '',
-        review: ''
+        review: '',
+        description: ''
     });
 
     // Load book data if editing
@@ -70,6 +74,7 @@ const AddBook = () => {
             author: info.authors ? info.authors.join(', ') : 'Unknown Author',
             pages: info.pageCount || 0,
             cover: info.imageLinks?.thumbnail?.replace('http:', 'https:') || '',
+            description: info.description || '',
             status: 'tbr',
             rating: 0,
             currentPage: 0,
@@ -150,9 +155,18 @@ const AddBook = () => {
                                     <p className="text-xs text-slate-500">{item.volumeInfo.authors?.join(', ')}</p>
                                     <p className="text-xs text-slate-400 mt-1">{item.volumeInfo.pageCount ? `${item.volumeInfo.pageCount} pages` : ''}</p>
                                 </div>
-                                <button className="self-center p-2 bg-brand-50 text-brand-600 rounded-full">
-                                    <Plus size={20} />
-                                </button>
+                                <div className="flex flex-col gap-2">
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); setPreviewBook({ title: item.volumeInfo.title, description: item.volumeInfo.description }); }}
+                                        className="p-2 bg-slate-100 dark:bg-slate-700 text-slate-500 rounded-full hover:text-brand-600 active:scale-95 transition-transform"
+                                        title="Lire le résumé"
+                                    >
+                                        <BookOpen size={20} />
+                                    </button>
+                                    <button className="p-2 bg-brand-50 text-brand-600 rounded-full">
+                                        <Plus size={20} />
+                                    </button>
+                                </div>
                             </div>
                         ))}
 
@@ -279,6 +293,12 @@ const AddBook = () => {
                 </div>
             )}
 
+            {/* Synopsis Preview Modal */}
+            <BookSynopsisModal
+                isOpen={!!previewBook}
+                onClose={() => setPreviewBook(null)}
+                book={previewBook}
+            />
         </div>
     );
 };
